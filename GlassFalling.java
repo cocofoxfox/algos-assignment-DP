@@ -30,33 +30,23 @@ public class GlassFalling {
 
   
 
-  public int glassFallingMemoized(int floors, int sheets) {
-
-    int[][] trials = new int[floors + 1][sheets + 1];
-    for(int i = 0; i <= floors; i++){
-      for(int j = 0; j <= sheets; j++){
-        trials[i][j] = -1;
-      }
-    }
-
-    for(int i = 1; i <= sheets; i++){
-      trials[0][i] = 0;
-      trials[1][i] = 1;
-
-    }
-
-    for(int i = 1; i <= floors; i++){
-      trials[i][1] = i;
-    }
+  public int glassFallingMemoized(int floors, int sheets, int [][] trials) {
+    
     //Base case 1, when floors equal 1, only one trials.
     if(floors == 0 || floors == 1){
-      
+      trials[floors][sheets] = floors;
       return floors;
     }
     //Base case 2, if we only have 1 sheet, we have to traverse all the floors.
     
     if(sheets == 1){
+      trials[floors][sheets] = floors;
       return floors;
+    }
+    //Base case3, if memorized array's item alreay has been calculated, get the value from cache directly.
+    //For java primary type array, default value is 0 or 0.0
+    if(trials[floors][sheets] != 0){
+      return trials[floors][sheets];
     }
     
     //
@@ -65,25 +55,12 @@ public class GlassFalling {
 
     // We don't know which floor we should drop the sheet, so use iteration to get all the possibilities.
     for(int i = 1; i <= floors; i++){
-
-      if(trials[i-1][sheets - 1] == -1 && trials[floors - i][sheets] == -1 ){
-
-        trials[i-1][sheets - 1] =  glassFallingRecur(i - 1, sheets - 1);
-        trials[floors - i][sheets] = glassFallingRecur(floors - i, sheets);
-
-      }else if(trials[i-1][sheets - 1] == -1 && trials[floors - i][sheets] != -1 ){
-
-       trials[i-1][sheets - 1] =  glassFallingRecur(i - 1, sheets - 1);
-
-      }else if(trials[i-1][sheets - 1] != -1 && trials[floors - i][sheets] == -1){
-        trials[floors - i][sheets] = glassFallingRecur(floors - i, sheets);
-      }
-      temp = Math.max(trials[i-1][sheets - 1], trials[floors - i][sheets]);
+      temp = Math.max(glassFallingMemoized(i - 1, sheets - 1, trials), glassFallingMemoized(floors - i, sheets,trials));
       minTrials = Math.min(temp, minTrials);
     }
 
-
-    return minTrials + 1;
+    trials[floors][sheets] = minTrials + 1;
+    return trials[floors][sheets];
   }
 
 
@@ -119,12 +96,13 @@ public class GlassFalling {
 
   public static void main(String args[]){
       GlassFalling gf = new GlassFalling();
-      
+      int[][] trials = new int[300][50];
+
       // Do not touch the below lines of code, and make sure
       // in your final turned-in copy, these are the only things printed
       int minTrials1Recur = gf.glassFallingRecur(27, 2);
       int minTrials1Bottom = gf.glassFallingBottomUp(27, 2);
-      int minTrials2Memo = gf.glassFallingMemoized(100, 3);
+      int minTrials2Memo = gf.glassFallingMemoized(100, 3, trials);
       int minTrials2Bottom = gf.glassFallingBottomUp(100, 3);
       System.out.println(minTrials1Recur + " " + minTrials1Bottom);
       System.out.println(minTrials2Memo + " " + minTrials2Bottom);
