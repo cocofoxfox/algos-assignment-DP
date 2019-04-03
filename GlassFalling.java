@@ -28,8 +28,8 @@ public class GlassFalling {
     return minTrials + 1;
   }
 
+  //Optional:
   
-
   public int glassFallingMemoized(int floors, int sheets, int [][] trials) {
     
     //Base case 1, when floors equal 1, only one trials.
