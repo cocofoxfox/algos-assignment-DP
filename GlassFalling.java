@@ -1,5 +1,6 @@
 /**
  * Glass Falling
+ * Author: Ning Wei
  */
 public class GlassFalling {
 
